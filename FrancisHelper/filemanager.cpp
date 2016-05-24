@@ -2,27 +2,25 @@
 
 FileManager::FileManager()
 {
-    m_pFileSystem->setRootPath(QDir::currentPath());
-    m_pTreeView->setAnimated(false);
-    m_pTreeView->setSortingEnabled(true);
-    m_pTreeView->setModel(m_pFileSystem);
-    m_pTreeView->setRootIndex(m_pFileSystem->index(QDir::currentPath()));
+
 }
 
 FileManager::FileManager(QString in_sRootDirectory)
 {
-    path = in_sRootDirectory;
-    m_pFileSystem->setRootPath(in_sRootDirectory);
-    m_pTreeView->setAnimated(false);
-    m_pTreeView->setSortingEnabled(true);
-    m_pTreeView->setModel(m_pFileSystem);
-    m_pTreeView->setRootIndex(m_pFileSystem->index(in_sRootDirectory));
+    m_qsPath = in_sRootDirectory;
+
 }
 
-void FileManager::test()
+bool FileManager::mooveFileToGeneratedFolder(QString in_qsFileToBeMoved)
 {
-    //    m_pFileSystem->mkdir(parent(), QString("lol"));
+    QString qdDestination = m_qsPath + "/" + m_qsGeneratedFolder;
+    qDebug() << qdDestination;
+    QFileInfo file(in_qsFileToBeMoved);
+    QDir myDir = QDir::root();
+    myDir.rename(in_qsFileToBeMoved, qdDestination + "/" + file.baseName() + "." + file.completeSuffix());
+    return true;
 }
+
 
 void FileManager::doWork()
 {
@@ -30,16 +28,28 @@ void FileManager::doWork()
     msgBox.setText("Succeed");
 
     QDir myDir = QDir::root();
-    if(!myDir.exists(path + "/LOL"))
+    if(!myDir.exists(m_qsPath + "/" + m_qsGeneratedFolder))
     {
-        myDir.mkdir(path + "/LOL");
+        myDir.mkdir(m_qsPath + "/" + m_qsGeneratedFolder);
         msgBox.exec();
     }
 
-    QDir recoredDir(path);
-    QStringList allFiles = recoredDir.entryList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst);//(QDir::Filter::Files,QDir::SortFlag::NoSort)
-    qDebug()<<allFiles;
+    QStringList allFiles;
+    QDirIterator it(m_qsPath, QDir::Files, QDirIterator::Subdirectories);
+    QFileInfo file;
+    while (it.hasNext()) {
+        file.setFile(it.next());
+        qDebug()<<file.baseName().size();
+        if (file.baseName().size() == 8){
+             allFiles << file.absoluteFilePath();
+        }
+    }
 
+    for (QString file : allFiles)
+    {
+        mooveFileToGeneratedFolder(file);
+    }
+    qDebug()<<allFiles;
 }
 
 

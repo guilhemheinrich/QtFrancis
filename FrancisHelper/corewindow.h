@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QTextEdit>
 
 
 #include "filemanager.h"
@@ -18,7 +19,8 @@ public:
     CoreWindow();
 
 private:
-    QPushButton *m_pMainButton = new QPushButton("Click me !", this);
+    QPushButton *m_pMainButton = new QPushButton("Select root directory", this);
+//    QTextEdit *m_pMainTextArea = new QTextEdit("Select a root directory", this);
     FileManager *m_pFileManager = new FileManager;
 
 private slots:

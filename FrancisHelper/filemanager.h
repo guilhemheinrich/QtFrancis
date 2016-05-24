@@ -8,17 +8,19 @@
 #include <QDebug>
 class FileManager
 {
+    friend class CoreManager;
 public:
     FileManager();
     FileManager(QString in_sRootDirectory);
 
-    void test();
+    bool mooveFileToGeneratedFolder(QString in_qsFileToBeMoved);
     void doWork();
 
-    QFileSystemModel *m_pFileSystem = new QFileSystemModel;
-    QTreeView *m_pTreeView = new QTreeView();
-    QString path;
+
 private:
+    QTreeView *m_pTreeView = new QTreeView();
+    QString m_qsPath;
+    QString m_qsGeneratedFolder = "Reworked";
 
 };
 
